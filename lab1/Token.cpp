@@ -96,7 +96,7 @@ Token *Token::deserialize(TokenInStream *stream) {
 
     vector<tokenByte> dataVector(dataLen);
     for (int i = 0; i < dataLen; i++) {
-        dataVector.push_back(stream->getNext<tokenByte>());
+        dataVector[i] = stream->getNext<tokenByte>();
     }
     newToken->setData(dataVector);
 

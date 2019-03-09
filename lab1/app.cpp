@@ -4,16 +4,20 @@
 
 
 #include <iostream>
-#include "Token.h"
+#include "token/Token.h"
 
 int main(int argc, char *argv[]) {
     auto token = new Token;
     token->setType(12);
     token->setMessageNum(100);
     token->setReservationNum(20);
-
-    string myName = "xd";
-    token->setSourceID(myName);
+    token->setDestinationID("xd");
+    token->setSourceID("lel");
+    vector<tokenByte> vector1;
+    vector1.push_back(2);
+    vector1.push_back(3);
+    vector1.push_back(4);
+    token->setData(vector1);
 
     auto sO = token->serialize();
     auto sI = new TokenInStream(sO->getData());

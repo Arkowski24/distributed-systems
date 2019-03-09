@@ -5,8 +5,10 @@
 #ifndef DISTRIBUTED_SYSTEMS_TOKEN_H
 #define DISTRIBUTED_SYSTEMS_TOKEN_H
 
-#include <string>
+#include <cstdio>
+#include <cstring>
 #include <vector>
+#include <string>
 #include "TokenOutStream.h"
 #include "TokenInStream.h"
 

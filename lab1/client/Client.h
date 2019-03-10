@@ -9,11 +9,19 @@
 
 #include <sys/socket.h>
 #include "../token/Token.h"
+#include "ThreadSafeQueue.h"
+
+struct Command {
+
+};
 
 class Client {
 private:
     int inSocket;
     int outSocket;
+    string prevNeighbour;
+
+    ThreadSafeQueue<Command> commands;
 public:
     Token *receiveToken();
 

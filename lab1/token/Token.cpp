@@ -4,7 +4,7 @@
 
 #include "Token.h"
 
-uint8_t Token::getType() const {
+TokenType Token::getType() const {
     return type;
 }
 
@@ -24,11 +24,11 @@ const string &Token::getDestinationID() const {
     return destinationID;
 }
 
-const vector<char> &Token::getData() const {
+const vector<u_int8_t> &Token::getData() const {
     return data;
 }
 
-void Token::setType(uint8_t type) {
+void Token::setType(TokenType type) {
     Token::type = type;
 }
 
@@ -48,14 +48,15 @@ void Token::setDestinationID(const string &destinationID) {
     Token::destinationID = destinationID;
 }
 
-void Token::setData(const vector<char> &data) {
+void Token::setData(const vector<u_int8_t> &data) {
     Token::data = data;
 }
 
 TokenOutStream *Token::serialize() const {
     auto stream = new TokenOutStream;
 
-    stream->write(&type, sizeof(uint8_t));
+    uint8_t iType = type;
+    stream->write(&iType, sizeof(uint8_t));
     stream->write((uint8_t *) (&messageNum), sizeof(uint64_t));
     stream->write((uint8_t *) (&reservationNum), sizeof(uint64_t));
 
@@ -71,7 +72,7 @@ TokenOutStream *Token::serialize() const {
     stream->write((uint8_t *) destinationID.c_str(), destIDLen);
 
     for (char it : data) {
-        stream->write((uint8_t *) &it, sizeof(tokenByte));
+        stream->write((uint8_t *) &it, sizeof(u_int8_t));
     }
 
     return stream;
@@ -80,7 +81,7 @@ TokenOutStream *Token::serialize() const {
 Token *Token::deserialize(TokenInStream *stream) {
     auto newToken = new Token;
 
-    newToken->setType(stream->getNext<uint8_t>());
+    newToken->setType(TokenType(stream->getNext<uint8_t>()));
     newToken->setMessageNum(stream->getNext<uint64_t>());
     newToken->setReservationNum(stream->getNext<uint64_t>());
 
@@ -94,11 +95,18 @@ Token *Token::deserialize(TokenInStream *stream) {
     newToken->setSourceID(string(srcPtr, srcIDLen));
     newToken->setDestinationID(string(destPtr, destIDLen));
 
-    vector<tokenByte> dataVector(dataLen);
+    vector<u_int8_t> dataVector(dataLen);
     for (int i = 0; i < dataLen; i++) {
-        dataVector[i] = stream->getNext<tokenByte>();
+        dataVector[i] = stream->getNext<u_int8_t>();
     }
     newToken->setData(dataVector);
 
     return newToken;
+}
+
+void Token::clear() {
+    type = TokenType::EMPTY;
+    sourceID.clear();
+    destinationID.clear();
+    data.clear();
 }

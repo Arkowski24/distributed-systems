@@ -8,6 +8,7 @@
 #define _XOPEN_SOURCE_EXTENDED 1
 
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include "../token/Token.h"
 #include "ThreadSafeQueue.h"
 
@@ -26,6 +27,13 @@ public:
     Token *receiveToken();
 
     void sendToken(Token *token);
+
+    void sendEmptyToken(Token *token);
+
+    void discardToken(Token *token);
+
+
+    void move(sockaddr_in newNeighbour);
 };
 
 

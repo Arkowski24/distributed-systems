@@ -15,6 +15,10 @@ struct Message {
     string sourceID;
     string destinationID;
     vector<uint8_t> data;
+
+    Message(string sourceID, string destinationID, vector<uint8_t> data)
+            : sourceID(std::move(sourceID)), destinationID(std::move(destinationID)), data(std::move(data)) {
+    }
 };
 
 

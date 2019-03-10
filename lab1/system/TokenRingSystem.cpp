@@ -3,26 +3,32 @@
 //
 
 #include "TokenRingSystem.h"
+#include "TokenMessageProcessor.h"
 
-Token *processToken(Token *token) {
+bool TokenRingSystem::isDuplicatedToken(Token *token) {
+    return lastMessageNum == token->getMessageNum() && token->getType() != TokenType::HELLO;
+}
 
-    return nullptr;
+bool TokenRingSystem::isDestination(Token *token) {
+    return token->getDestinationID() == ownID;
+}
+
+bool TokenRingSystem::canTransmit(Token *token) {
+    return hasReservation && token->getMessageNum() == reservationNum;
 }
 
 void TokenRingSystem::work() {
-    while (true) {
+    while (isWorking) {
         Token *token = client.receiveToken();
-        Token *newToken = processToken(token);
-        if (newToken == nullptr)
-            break;
-        client.sendToken(newToken);
+        TokenMessageProcessor::processToken(this, token);
     }
 }
 
 void TokenRingSystem::sendMessage(Message *message) {
-
+    inQueue.push(message);
 }
 
 Message *TokenRingSystem::recieveMessage() {
-    return nullptr;
+    Message *elem = outQueue.pop();
+    return elem;
 }

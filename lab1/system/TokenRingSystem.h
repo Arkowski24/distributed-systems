@@ -8,16 +8,33 @@
 
 #include "Message.h"
 #include "../client/Client.h"
-
-enum state {
-    INIT, PASSIVE, RESERVING, RESERVED
-};
+#include "../client/ThreadSafeQueue.h"
+#include "TokenRingUtility.h"
 
 class TokenRingSystem {
+    friend class TokenMessageProcessor;
 private:
     Client client;
 
+    string ownID;
+    string neighbourID;
+
+    uint64_t lastMessageNum;
+    bool hasReservation;
+    uint64_t reservationNum;
+
+    ThreadSafeQueue<Message *> inQueue;
+    ThreadSafeQueue<Message *> outQueue;
+
+    bool isWorking;
+
     void work();
+
+    bool isDuplicatedToken(Token *token);
+
+    bool isDestination(Token *token);
+
+    bool canTransmit(Token *token);
 
 public:
     void sendMessage(Message *message);

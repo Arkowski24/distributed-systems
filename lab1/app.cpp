@@ -8,12 +8,12 @@
 
 int main(int argc, char *argv[]) {
     auto token = new Token;
-    token->setType(12);
+    token->setType(TokenType(0));
     token->setMessageNum(100);
     token->setReservationNum(20);
     token->setDestinationID("xd");
     token->setSourceID("lel");
-    vector<tokenByte> vector1;
+    vector<uint8_t> vector1;
     vector1.push_back(2);
     vector1.push_back(3);
     vector1.push_back(4);

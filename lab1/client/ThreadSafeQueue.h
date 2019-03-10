@@ -6,26 +6,43 @@
 #define DISTRIBUTED_SYSTEMS_THREADSAFEQUEUE_H
 
 #include <mutex>
-#include <deque>
+#include <condition_variable>
+#include <queue>
 
 using std::mutex;
-using std::deque;
+using std::queue;
+using std::condition_variable;
 
 template<typename T>
 class ThreadSafeQueue {
 private:
-    deque<T> queue;
-    mutex queueMutex;
+    queue<T> q = queue<T>();
+    mutex qMutex;
+    condition_variable qCond;
 public:
-    void enqueue(T elem) {
-        std::lock_guard<mutex> lock(queueMutex);
-        queue.push_back(elem);
+    void push(T elem) {
+        std::unique_lock<mutex> lock(qMutex);
+        q.push(elem);
+        lock.unlock();
+        qCond.notify_one();
     }
 
-    T dequeue() {
-        std::lock_guard<mutex> lock(queueMutex);
-        auto elem = queue.pop_front();
+    T pop() {
+        std::unique_lock<mutex> lock(qMutex);
+        while (q.empty()) {
+            qCond.wait(lock);
+        }
+        auto elem = q.front();
+        q.pop();
+        lock.unlock();
         return elem;
+    }
+
+    bool empty() {
+        std::unique_lock<mutex> lock(qMutex);
+        auto isEmpty = q.empty();
+        lock.unlock();
+        return isEmpty;
     }
 };
 

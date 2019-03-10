@@ -33,3 +33,16 @@ void Client::sendToken(Token *token) {
     send(outSocket, &dto, structSize, 0);
     delete outStream;
 }
+
+void Client::sendEmptyToken(Token *token) {
+    token->clear();
+    sendToken(token);
+}
+
+void Client::discardToken(Token *token) {
+    delete token;
+}
+
+void Client::move(sockaddr_in newNeighbour) {
+
+}

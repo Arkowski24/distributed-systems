@@ -12,15 +12,16 @@
 #include "TokenOutStream.h"
 #include "TokenInStream.h"
 
-#define tokenByte char
-#define SERIALIZED_TOKEN_MIN_SIZE (3 * sizeof(uint8_t) + sizeof(uint32_t) + 2 * sizeof(uint64_t))
-
 using std::string;
 using std::vector;
 
+enum TokenType {
+    HELLO, EMPTY, NREQ, NRESP, MOVE, DATA
+};
+
 class Token {
 private:
-    uint8_t type;
+    TokenType type;
 
     uint64_t messageNum;
     uint64_t reservationNum;
@@ -28,10 +29,10 @@ private:
     string sourceID;
     string destinationID;
 
-    vector<tokenByte> data;
+    vector<u_int8_t> data;
 
 public:
-    uint8_t getType() const;
+    TokenType getType() const;
 
     uint64_t getMessageNum() const;
 
@@ -41,9 +42,9 @@ public:
 
     const string &getDestinationID() const;
 
-    const vector<tokenByte> &getData() const;
+    const vector<u_int8_t> &getData() const;
 
-    void setType(uint8_t type);
+    void setType(TokenType type);
 
     void setMessageNum(uint64_t messageNum);
 
@@ -53,11 +54,13 @@ public:
 
     void setDestinationID(const string &destinationID);
 
-    void setData(const vector<char> &data);
+    void setData(const vector<u_int8_t> &data);
 
     TokenOutStream *serialize() const;
 
     static Token *deserialize(TokenInStream *stream);
+
+    void clear();
 };
 
 

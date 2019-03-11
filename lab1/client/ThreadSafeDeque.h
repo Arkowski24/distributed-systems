@@ -7,22 +7,22 @@
 
 #include <mutex>
 #include <condition_variable>
-#include <queue>
+#include <deque>
 
 using std::mutex;
-using std::queue;
+using std::deque;
 using std::condition_variable;
 
 template<typename T>
-class ThreadSafeQueue {
+class ThreadSafeDeque {
 private:
-    queue<T> q = queue<T>();
+    deque<T> q = deque<T>();
     mutex qMutex;
     condition_variable qCond;
 public:
     void push(T elem) {
         std::unique_lock<mutex> lock(qMutex);
-        q.push(elem);
+        q.push_back(elem);
         lock.unlock();
         qCond.notify_one();
     }
@@ -33,9 +33,16 @@ public:
             qCond.wait(lock);
         }
         auto elem = q.front();
-        q.pop();
+        q.pop_front();
         lock.unlock();
         return elem;
+    }
+
+    void push_front(T elem) {
+        std::unique_lock<mutex> lock(qMutex);
+        q.push_front(elem);
+        lock.unlock();
+        qCond.notify_one();
     }
 
     bool empty() {

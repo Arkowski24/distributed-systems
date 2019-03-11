@@ -8,23 +8,26 @@
 
 #include "Message.h"
 #include "../client/Client.h"
-#include "../client/ThreadSafeQueue.h"
+#include "../client/ThreadSafeDeque.h"
 #include "TokenRingUtility.h"
+#include <thread>
 
 class TokenRingSystem {
     friend class TokenMessageProcessor;
+
 private:
-    Client client;
+    Client *client;
 
     string ownID;
     string neighbourID;
+    sockaddr_in ownAddress;
 
     uint64_t lastMessageNum;
     bool hasReservation;
     uint64_t reservationNum;
 
-    ThreadSafeQueue<Message *> inQueue;
-    ThreadSafeQueue<Message *> outQueue;
+    ThreadSafeDeque<Message *> inQueue;
+    ThreadSafeDeque<Message *> outQueue;
 
     bool isWorking;
 
@@ -37,6 +40,8 @@ private:
     bool canTransmit(Token *token);
 
 public:
+    TokenRingSystem(string ownID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type, bool hasToken);
+
     void sendMessage(Message *message);
 
     Message *recieveMessage();

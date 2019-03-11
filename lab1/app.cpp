@@ -5,27 +5,23 @@
 
 #include <iostream>
 #include "token/Token.h"
+#include "system/TokenRingSystem.h"
 
 int main(int argc, char *argv[]) {
-    auto token = new Token;
-    token->setType(TokenType(0));
-    token->setMessageNum(100);
-    token->setReservationNum(20);
-    token->setDestinationID("xd");
-    token->setSourceID("lel");
-    vector<uint8_t> vector1;
-    vector1.push_back(2);
-    vector1.push_back(3);
-    vector1.push_back(4);
-    token->setData(vector1);
+    sockaddr_in inAdd = {0};
+    sockaddr_in outAdd = {0};
 
-    auto sO = token->serialize();
-    auto sI = new TokenInStream(sO->getData());
-    auto newToken = Token::deserialize(sI);
-    auto type = newToken->getType();
-    auto name = newToken->getSourceID();
+    string ownID = "xd";
+    inAdd.sin_family = AF_INET;
+    inAdd.sin_port = htons(2344);
+    inAdd.sin_addr.s_addr = INADDR_ANY;
 
-    std::cout << (int32_t) type << " " << name;
+    outAdd.sin_family = AF_INET;
+    outAdd.sin_port = htons(2344);
+    outAdd.sin_addr.s_addr = INADDR_ANY;
+
+
+    TokenRingSystem *ringSystem = new TokenRingSystem(ownID, inAdd, outAdd, TokenRingType::TOKEN_UDP, true);
 
     return 0;
 }

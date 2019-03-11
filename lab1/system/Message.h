@@ -7,17 +7,20 @@
 
 #include <vector>
 #include <string>
+#include "../token/Token.h"
 
 using std::string;
 using std::vector;
+using std::move;
 
 struct Message {
+    TokenType type;
     string sourceID;
     string destinationID;
     vector<uint8_t> data;
 
-    Message(string sourceID, string destinationID, vector<uint8_t> data)
-            : sourceID(std::move(sourceID)), destinationID(std::move(destinationID)), data(std::move(data)) {
+    Message(TokenType type, string sourceID, string destinationID, vector<uint8_t> data)
+            : type(type), sourceID(move(sourceID)), destinationID(move(destinationID)), data(move(data)) {
     }
 };
 

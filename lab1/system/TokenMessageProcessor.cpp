@@ -83,7 +83,7 @@ void TokenMessageProcessor::processEmptyToken(TokenRingSystem *system, Token *to
     auto msg = system->inQueue.pop();
     if (msg->type == TokenType::MOVE) {
         if (system->neighbourID.empty()) {
-            auto newToken = TokenRingUtility::buildNReqToken(system->ownID, system->ownAddress, token);
+            auto newToken = TokenRingUtility::buildNReqToken(system->ownID, system->client->getOwnAddress(), token);
             system->inQueue.push_front(msg);
             system->client->sendToken(newToken);
             return;
@@ -104,7 +104,7 @@ void TokenMessageProcessor::processNReqToken(TokenRingSystem *system, Token *tok
     sockaddr_in tokenAddress = {0};
     memcpy(&tokenAddress, token->getData().data(), sizeof(sockaddr_in));
 
-    if (memcmp(&tokenAddress, &system->ownAddress, sizeof(sockaddr_in)) != 0) {
+    if (memcmp(&tokenAddress, &system->client->getOutputAddress(), sizeof(sockaddr_in)) != 0) {
         system->client->sendToken(token);
         return;
     }

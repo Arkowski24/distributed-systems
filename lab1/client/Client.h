@@ -23,6 +23,7 @@ private:
     int outSocket;
     TokenRingType type;
 
+    sockaddr_in ownAddress;
     sockaddr_in outputAddress;
 
 public:
@@ -37,6 +38,10 @@ public:
     void discardToken(Token *token);
 
     void move(sockaddr_in newNeighbour);
+
+    const sockaddr_in &getOwnAddress() const;
+
+    const sockaddr_in &getOutputAddress() const;
 };
 
 

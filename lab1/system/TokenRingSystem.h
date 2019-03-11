@@ -21,7 +21,6 @@ private:
 
     string ownID;
     string neighbourID;
-    sockaddr_in ownAddress;
 
     uint64_t lastMessageNum;
     bool hasReservation;

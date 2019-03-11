@@ -10,7 +10,7 @@ struct TempTokenDTO {
 };
 
 Client::Client(sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type)
-        : type(type), outputAddress(outAdr) {
+        : type(type), ownAddress(inAdr), outputAddress(outAdr) {
 
     if (type == TokenRingType::TOKEN_UDP) {
         inSocket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -74,4 +74,12 @@ void Client::move(sockaddr_in newNeighbour) {
     if (type == TokenRingType::TOKEN_UDP) {
         outputAddress = newNeighbour;
     }
+}
+
+const sockaddr_in &Client::getOwnAddress() const {
+    return ownAddress;
+}
+
+const sockaddr_in &Client::getOutputAddress() const {
+    return outputAddress;
 }

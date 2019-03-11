@@ -22,11 +22,10 @@ void TokenRingSystem::work() {
 TokenRingSystem::TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type,
                                  bool hasToken) {
     ownID = systemID;
-    ownAddress = inAdr;
 
     client = new Client(inAdr, outAdr, type);
     isWorking = true;
-    auto helloToken = TokenRingUtility::buildHelloToken(ownID, ownAddress);
+    auto helloToken = TokenRingUtility::buildHelloToken(ownID, client->getOwnAddress());
     client->sendToken(helloToken);
 
     if (hasToken) {

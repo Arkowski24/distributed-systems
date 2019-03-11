@@ -6,15 +6,18 @@
 #include "TokenMessageProcessor.h"
 
 void TokenRingSystem::work() {
+    reservationNum = 0;
+    hasReservation = false;
+
     while (isWorking) {
         Token *token = client->receiveToken();
         TokenMessageProcessor::processToken(this, token);
     }
 }
 
-TokenRingSystem::TokenRingSystem(string ownID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type,
+TokenRingSystem::TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type,
                                  bool hasToken) {
-    ownID = ownID;
+    ownID = systemID;
     ownAddress = inAdr;
 
     client = new Client(inAdr, outAdr, type);
@@ -32,11 +35,16 @@ TokenRingSystem::TokenRingSystem(string ownID, sockaddr_in inAdr, sockaddr_in ou
 
 bool TokenRingSystem::isDuplicatedToken(Token *token) {
     bool isExcluded = token->getType() == TokenType::HELLO || token->getType() == TokenType::NRESP;
-    return lastMessageNum == token->getMessageNum() && !isExcluded;
+    bool isSameNumAsLast = lastMessageNum == token->getMessageNum();
+    return isSameNumAsLast && !isExcluded;
 }
 
 bool TokenRingSystem::isDestination(Token *token) {
     return token->getDestinationID() == ownID;
+}
+
+bool TokenRingSystem::isNormalToken(Token *token) {
+    return token->getType() != TokenType::HELLO;
 }
 
 bool TokenRingSystem::canTransmit(Token *token) {

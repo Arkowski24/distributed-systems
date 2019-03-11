@@ -8,14 +8,14 @@
 Token *TokenRingUtility::buildFirstToken() {
     auto newToken = new Token;
     newToken->setType(TokenType::EMPTY);
-    newToken->setMessageNum(0);
+    newToken->setMessageNum(1);
     newToken->setReservationNum(0);
     return newToken;
 }
 
 Token *TokenRingUtility::buildHelloToken(string &ownID, sockaddr_in ownAddr) {
     auto newToken = new Token;
-    newToken->setType(TokenType::EMPTY);
+    newToken->setType(TokenType::HELLO);
     newToken->setSourceID(ownID);
     newToken->setMessageNum(0);
     newToken->setReservationNum(0);
@@ -32,7 +32,7 @@ Token *TokenRingUtility::buildNRespToken(string &ownID, Token *token) {
     auto newToken = new Token;
     newToken->setType(TokenType::NRESP);
     newToken->setSourceID(ownID);
-    newToken->setDestinationID(token->getDestinationID());
+    newToken->setDestinationID(token->getSourceID());
     newToken->setMessageNum(token->getMessageNum());
     newToken->setReservationNum(token->getReservationNum());
     newToken->setData(token->getData());
@@ -41,7 +41,7 @@ Token *TokenRingUtility::buildNRespToken(string &ownID, Token *token) {
 
 Token *TokenRingUtility::buildNReqToken(string &ownID, sockaddr_in ownAddress, Token *token) {
     auto newToken = new Token;
-    newToken->setType(TokenType::NRESP);
+    newToken->setType(TokenType::NREQ);
     newToken->setSourceID(ownID);
     newToken->setDestinationID(token->getDestinationID());
     newToken->setMessageNum(token->getMessageNum());
@@ -49,7 +49,7 @@ Token *TokenRingUtility::buildNReqToken(string &ownID, sockaddr_in ownAddress, T
 
     vector<uint8_t> tokenData(sizeof(sockaddr_in));
     memcpy(tokenData.data(), &ownAddress, sizeof(sockaddr_in));
-    newToken->setData(token->getData());
+    newToken->setData(tokenData);
     return newToken;
 }
 

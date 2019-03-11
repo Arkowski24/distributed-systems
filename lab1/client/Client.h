@@ -21,6 +21,7 @@ class Client {
 private:
     int inSocket;
     int outSocket;
+    TokenRingType type;
 
 public:
     Client(sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type);

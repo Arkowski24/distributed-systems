@@ -7,6 +7,15 @@
 void TokenMessageProcessor::processToken(TokenRingSystem *system, Token *token) {
     if (system->isDuplicatedToken(token)) {
         system->client->discardToken(token);
+        return;
+    }
+
+    if (system->isNormalToken(token)) {
+        if (!system->inQueue.empty() && !system->hasReservation) {
+            system->hasReservation = true;
+            system->reservationNum = token->getReservationNum() + 1;
+            token->setReservationNum(system->reservationNum);
+        }
     }
 
     if (system->isDestination(token)) {
@@ -69,6 +78,7 @@ void TokenMessageProcessor::processEmptyToken(TokenRingSystem *system, Token *to
         system->client->sendToken(token);
         return;
     }
+    system->hasReservation = false;
 
     auto msg = system->inQueue.pop();
     if (msg->type == TokenType::MOVE) {
@@ -91,10 +101,10 @@ void TokenMessageProcessor::processEmptyToken(TokenRingSystem *system, Token *to
 }
 
 void TokenMessageProcessor::processNReqToken(TokenRingSystem *system, Token *token) {
-    auto &tokenData = token->getData();
-    string requiredID = string((char *) tokenData.data(), tokenData.size());
+    sockaddr_in tokenAddress = {0};
+    memcpy(&tokenAddress, token->getData().data(), sizeof(sockaddr_in));
 
-    if (requiredID != system->ownID) {
+    if (memcmp(&tokenAddress, &system->ownAddress, sizeof(sockaddr_in)) != 0) {
         system->client->sendToken(token);
         return;
     }

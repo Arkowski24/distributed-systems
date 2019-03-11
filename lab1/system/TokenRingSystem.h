@@ -37,10 +37,12 @@ private:
 
     bool isDestination(Token *token);
 
+    bool isNormalToken(Token *token);
+
     bool canTransmit(Token *token);
 
 public:
-    TokenRingSystem(string ownID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type, bool hasToken);
+    TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type, bool hasToken);
 
     void sendMessage(Message *message);
 

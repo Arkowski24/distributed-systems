@@ -42,9 +42,9 @@ void TokenRingSystem::shutdown() {
 }
 
 bool TokenRingSystem::isDuplicatedToken(Token *token) {
-    bool isExcluded = token->getType() == TokenType::HELLO || token->getType() == TokenType::NRESP;
+    bool isProbedType = token->getType() == TokenType::DATA;
     bool isSameNumAsLast = lastMessageNum == token->getMessageNum();
-    return isSameNumAsLast && !isExcluded;
+    return isSameNumAsLast && isProbedType && !isDestination(token);
 }
 
 bool TokenRingSystem::isDestination(Token *token) {

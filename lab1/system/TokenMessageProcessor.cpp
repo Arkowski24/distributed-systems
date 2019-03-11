@@ -8,6 +8,8 @@ void TokenMessageProcessor::processToken(TokenRingSystem *system, Token *token) 
     if (system->isDuplicatedToken(token)) {
         system->client->discardToken(token);
         return;
+    } else {
+        system->lastMessageNum = token->getMessageNum();
     }
 
     if (system->isNormalToken(token)) {

@@ -69,7 +69,7 @@ void TokenMessageProcessor::processToken(TokenRingSystem *system, Token *token) 
 
 void TokenMessageProcessor::processHelloToken(TokenRingSystem *system, Token *token) {
     auto mvnMsg = new Message(TokenType::MOVE, system->ownID, system->neighbourID, token->getData());
-    system->inQueue.push(mvnMsg);
+    system->inQueue.push_front(mvnMsg);
     delete token;
 }
 

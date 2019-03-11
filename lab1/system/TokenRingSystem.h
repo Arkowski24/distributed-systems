@@ -8,16 +8,22 @@
 
 #include "Message.h"
 #include "../client/Client.h"
+#include "../client/udp/ClientUDP.h"
+#include "../client/tcp/ClientTCP.h"
 #include "../client/ThreadSafeDeque.h"
 #include "TokenRingUtility.h"
 #include <chrono>
 #include <thread>
 
+enum TokenRingType {
+    TOKEN_UDP, TOKEN_TCP
+};
+
 class TokenRingSystem {
     friend class TokenMessageProcessor;
 
 private:
-    Client *client;
+    ClientUDP *client;
 
     string ownID;
     string neighbourID;
@@ -50,7 +56,7 @@ public:
 
     void sendMessage(Message *message);
 
-    Message *recieveMessage();
+    Message *receiveMessage();
 };
 
 

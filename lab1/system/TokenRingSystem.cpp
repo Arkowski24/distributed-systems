@@ -23,7 +23,12 @@ TokenRingSystem::TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_i
                                  bool hasToken) {
     ownID = systemID;
 
-    client = new Client(inAdr, outAdr, type);
+    if (type == TokenRingType::TOKEN_UDP) {
+        client = new ClientUDP(inAdr, outAdr);
+    } else {
+        //client = new ClientTCP(inAdr, outAdr);
+    }
+
     isWorking = true;
     auto helloToken = TokenRingUtility::buildHelloToken(ownID, client->getOwnAddress());
     client->sendToken(helloToken);
@@ -63,7 +68,7 @@ void TokenRingSystem::sendMessage(Message *message) {
     inQueue.push(message);
 }
 
-Message *TokenRingSystem::recieveMessage() {
+Message *TokenRingSystem::receiveMessage() {
     Message *elem = outQueue.pop();
     return elem;
 }

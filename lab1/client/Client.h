@@ -1,47 +1,34 @@
 //
-// Created by arekp on 2019-03-09.
+// Created by USER on 11.03.2019.
 //
 
 #ifndef DISTRIBUTED_SYSTEMS_CLIENT_H
 #define DISTRIBUTED_SYSTEMS_CLIENT_H
 
-#define _XOPEN_SOURCE_EXTENDED 1
-
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <cstdint>
 #include <netinet/in.h>
 #include "../token/Token.h"
-#include "ThreadSafeDeque.h"
 
-enum TokenRingType {
-    TOKEN_TCP, TOKEN_UDP
+struct TempTokenDTO {
+    uint64_t size;
+    char data[];
 };
 
 class Client {
-private:
-    int inSocket;
-    int outSocket;
-    TokenRingType type;
-
-    sockaddr_in ownAddress;
-    sockaddr_in outputAddress;
-
 public:
-    Client(sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type);
+    virtual Token *receiveToken() = 0;
 
-    Token *receiveToken();
+    virtual void sendToken(Token *token) = 0;
 
-    void sendToken(Token *token);
+    virtual void sendNewEmptyToken(Token *token) = 0;
 
-    void sendNewEmptyToken(Token *token);
+    virtual void discardToken(Token *token) = 0;
 
-    void discardToken(Token *token);
+    virtual void move(sockaddr_in newNeighbour) = 0;
 
-    void move(sockaddr_in newNeighbour);
+    virtual const sockaddr_in &getOwnAddress() const = 0;
 
-    const sockaddr_in &getOwnAddress() const;
-
-    const sockaddr_in &getOutputAddress() const;
+    virtual const sockaddr_in &getOutputAddress() const = 0;
 };
 
 

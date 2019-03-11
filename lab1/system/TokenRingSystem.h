@@ -10,6 +10,7 @@
 #include "../client/Client.h"
 #include "../client/ThreadSafeDeque.h"
 #include "TokenRingUtility.h"
+#include <chrono>
 #include <thread>
 
 class TokenRingSystem {
@@ -29,6 +30,8 @@ private:
     ThreadSafeDeque<Message *> inQueue;
     ThreadSafeDeque<Message *> outQueue;
 
+    std::thread systemThread;
+
     bool isWorking;
 
     void work();
@@ -43,6 +46,8 @@ private:
 
 public:
     TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type, bool hasToken);
+
+    void shutdown();
 
     void sendMessage(Message *message);
 

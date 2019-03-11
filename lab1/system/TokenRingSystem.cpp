@@ -2,6 +2,7 @@
 // Created by arekp on 2019-03-10.
 //
 
+#include <iostream>
 #include "TokenRingSystem.h"
 #include "TokenMessageProcessor.h"
 
@@ -11,6 +12,9 @@ void TokenRingSystem::work() {
 
     while (isWorking) {
         Token *token = client->receiveToken();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << ownID << ": " << token->getType() << " " << token->getMessageNum() << " " << token->getSourceID()
+                  << " " << token->getDestinationID() << std::endl;
         TokenMessageProcessor::processToken(this, token);
     }
 }
@@ -30,7 +34,12 @@ TokenRingSystem::TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_i
         client->sendToken(firstToken);
     }
 
-    work();
+    systemThread = std::thread(&TokenRingSystem::work, this);
+}
+
+void TokenRingSystem::shutdown() {
+    isWorking = false;
+    systemThread.join();
 }
 
 bool TokenRingSystem::isDuplicatedToken(Token *token) {

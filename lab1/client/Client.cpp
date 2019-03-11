@@ -10,17 +10,17 @@ struct TempTokenDTO {
 };
 
 Client::Client(sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type)
-        : type(type) {
+        : type(type), outputAddress(outAdr) {
+
     if (type == TokenRingType::TOKEN_UDP) {
         inSocket = socket(AF_INET, SOCK_DGRAM, 0);
         bind(inSocket, (struct sockaddr *) &inAdr, sizeof(sockaddr_in));
         outSocket = inSocket;
-        connect(outSocket, (struct sockaddr *) &outAdr, sizeof(sockaddr_in));
     } else {
+        //TO DO
         inSocket = socket(AF_INET, SOCK_STREAM, 0);
         bind(inSocket, (struct sockaddr *) &inAdr, sizeof(sockaddr_in));
         outSocket = socket(AF_INET, SOCK_STREAM, 0);
-        connect(outSocket, (struct sockaddr *) &outAdr, sizeof(sockaddr_in));
     }
 }
 
@@ -50,7 +50,12 @@ void Client::sendToken(Token *token) {
     dto->size = structSize;
     memcpy(&dto->data, outStream->getData(), outStream->getCurrentSize());
 
-    send(outSocket, dto, structSize, 0);
+    if (type == TokenRingType::TOKEN_UDP) {
+        sendto(outSocket, dto, structSize, 0, (sockaddr *) &outputAddress, sizeof(sockaddr_in));
+    } else {
+        send(outSocket, dto, structSize, 0);
+    }
+
     delete outStream;
     free(dto);
 }
@@ -67,6 +72,6 @@ void Client::discardToken(Token *token) {
 
 void Client::move(sockaddr_in newNeighbour) {
     if (type == TokenRingType::TOKEN_UDP) {
-        connect(outSocket, (struct sockaddr *) &newNeighbour, sizeof(sockaddr_in));
+        outputAddress = newNeighbour;
     }
 }

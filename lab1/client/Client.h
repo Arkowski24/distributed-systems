@@ -23,6 +23,8 @@ private:
     int outSocket;
     TokenRingType type;
 
+    sockaddr_in outputAddress;
+
 public:
     Client(sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type);
 

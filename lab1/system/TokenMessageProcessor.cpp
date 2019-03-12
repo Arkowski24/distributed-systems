@@ -71,7 +71,7 @@ void TokenMessageProcessor::processToken(TokenRingSystem *system, Token *token) 
 
 void TokenMessageProcessor::processHelloToken(TokenRingSystem *system, Token *token) {
     auto mvnMsg = new Message(TokenType::MOVE, system->ownID, system->neighbourID, token->getData());
-    system->inQueue.push_front(mvnMsg);
+    system->moveQueue.push(mvnMsg);
     delete token;
 }
 
@@ -82,11 +82,17 @@ void TokenMessageProcessor::processEmptyToken(TokenRingSystem *system, Token *to
     }
     system->hasReservation = false;
 
-    auto msg = system->inQueue.pop();
+    Message *msg;
+    if (!system->moveQueue.empty()) {
+        msg = system->moveQueue.pop();
+    } else {
+        msg = system->inQueue.pop();
+    }
+
     if (msg->type == TokenType::MOVE) {
         if (system->neighbourID.empty()) {
             auto newToken = TokenRingUtility::buildNReqToken(system->ownID, system->client->getOwnAddress(), token);
-            system->inQueue.push_front(msg);
+            system->moveQueue.push_front(msg);
             system->client->sendToken(newToken);
             return;
         } else {

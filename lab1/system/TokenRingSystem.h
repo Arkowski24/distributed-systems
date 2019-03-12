@@ -33,6 +33,7 @@ private:
     uint64_t reservationNum;
 
     ThreadSafeDeque<Message *> inQueue;
+    ThreadSafeDeque<Message *> moveQueue;
     ThreadSafeDeque<Message *> outQueue;
 
     std::thread systemThread;

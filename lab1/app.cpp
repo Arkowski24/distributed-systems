@@ -25,9 +25,9 @@ int main(int argc, char *argv[]) {
     TokenRingType ringType;
     bool hasToken;
 
-    hasToken = (strcmp("y", argv[5]) == 0|| strcmp("Y", argv[5]) == 0);
+    hasToken = (strcmp("y", argv[5]) == 0 || strcmp("Y", argv[5]) == 0);
 
-    if(strcmp("tcp", argv[6]) == 0 || strcmp("TCP", argv[6]) == 0)
+    if (strcmp("tcp", argv[6]) == 0 || strcmp("TCP", argv[6]) == 0)
         ringType = TokenRingType::TOKEN_TCP;
     else
         ringType = TokenRingType::TOKEN_UDP;
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     string receiver, data;
     do {
         std::cin >> receiver >> data;
-        vector<uint8_t> msgData (data.size());
+        vector<uint8_t> msgData(data.size());
         memcpy(msgData.data(), data.data(), data.length());
         auto *msg = new Message(TokenType::DATA, ownID, receiver, msgData);
         ring->sendMessage(msg);

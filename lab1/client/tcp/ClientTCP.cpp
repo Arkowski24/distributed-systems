@@ -34,6 +34,15 @@ ClientTCP::ClientTCP(sockaddr_in inAdr, sockaddr_in outAdr)
     connect(outSocket, (struct sockaddr *) &outAdr, sizeof(sockaddr_in));
 }
 
+ClientTCP::~ClientTCP() {
+    processAccepts = false;
+    close(inSocket);
+    for (auto client : clientSockets) {
+        close(client.fd);
+    }
+    acceptThread.join();
+}
+
 pair<Token *, int> ClientTCP::receiveOneToken(int clientSocket) {
     uint64_t size = 0;
     ssize_t msgStat = recv(clientSocket, &size, sizeof(uint64_t), MSG_PEEK | MSG_DONTWAIT);

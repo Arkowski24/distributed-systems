@@ -41,6 +41,11 @@ TokenRingSystem::TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_i
     systemThread = std::thread(&TokenRingSystem::work, this);
 }
 
+TokenRingSystem::~TokenRingSystem() {
+    shutdown();
+    delete client;
+}
+
 void TokenRingSystem::shutdown() {
     isWorking = false;
     systemThread.join();

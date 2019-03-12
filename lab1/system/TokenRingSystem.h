@@ -53,6 +53,8 @@ private:
 public:
     TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_in outAdr, TokenRingType type, bool hasToken);
 
+    ~TokenRingSystem();
+
     void shutdown();
 
     void sendMessage(Message *message);

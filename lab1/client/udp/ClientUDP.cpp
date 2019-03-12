@@ -12,6 +12,10 @@ ClientUDP::ClientUDP(sockaddr_in inAdr, sockaddr_in outAdr)
     outSocket = inSocket;
 }
 
+ClientUDP::~ClientUDP() {
+    close(inSocket);
+}
+
 Token *ClientUDP::receiveToken() {
     uint64_t size = 0;
     recv(inSocket, &size, sizeof(uint64_t), MSG_PEEK);

@@ -16,6 +16,8 @@ struct TempTokenDTO {
 
 class Client {
 public:
+    virtual ~Client() = default;
+
     virtual Token *receiveToken() = 0;
 
     virtual void sendToken(Token *token) = 0;

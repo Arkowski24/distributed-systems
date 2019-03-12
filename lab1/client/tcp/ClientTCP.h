@@ -37,12 +37,12 @@ private:
 
     void handleInSocket();
 
-    ThreadSafeDeque<Token *> output;
-
     pair<Token *, int> receiveOneToken(int clientSocket);
 
 public:
     ClientTCP(sockaddr_in inAdr, sockaddr_in outAdr);
+
+    ~ClientTCP() override;
 
     Token *receiveToken() override;
 

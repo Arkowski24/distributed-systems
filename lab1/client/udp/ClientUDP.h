@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 #include "../../token/Token.h"
 #include "../ThreadSafeDeque.h"
 #include "../Client.h"
@@ -24,6 +25,8 @@ private:
 
 public:
     ClientUDP(sockaddr_in inAdr, sockaddr_in outAdr);
+
+    ~ClientUDP() override;
 
     Token *receiveToken() override;
 

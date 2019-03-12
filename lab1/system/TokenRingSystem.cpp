@@ -12,9 +12,8 @@ void TokenRingSystem::work() {
 
     while (isWorking) {
         Token *token = client->receiveToken();
+        client->notifyListeners(token);
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout << ownID << ": " << token->getType() << " " << token->getMessageNum() << " " << token->getSourceID()
-                  << " " << token->getDestinationID() << std::endl;
         TokenMessageProcessor::processToken(this, token);
     }
 }

@@ -7,7 +7,11 @@
 
 #include <cstdint>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include "../token/Token.h"
+
+#define LISTENERS_MULTICAST_ADDRESS "224.1.1.1"
+#define LISTENERS_MULTICAST_PORT 50075
 
 struct TempTokenDTO {
     uint64_t size;
@@ -15,7 +19,13 @@ struct TempTokenDTO {
 };
 
 class Client {
+private:
+    sockaddr_in listenerAddress;
+    int lSocket = socket(AF_INET, SOCK_DGRAM, 0);
+
 public:
+    Client();
+
     virtual ~Client() = default;
 
     virtual Token *receiveToken() = 0;
@@ -31,6 +41,8 @@ public:
     virtual const sockaddr_in &getOwnAddress() const = 0;
 
     virtual const sockaddr_in &getOutputAddress() const = 0;
+
+    void notifyListeners(Token *token);
 };
 
 

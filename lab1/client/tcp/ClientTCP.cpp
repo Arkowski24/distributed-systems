@@ -26,12 +26,12 @@ ClientTCP::ClientTCP(sockaddr_in inAdr, sockaddr_in outAdr)
         : ownAddress(inAdr), outputAddress(outAdr) {
 
     inSocket = socket(AF_INET, SOCK_STREAM, 0);
-    bind(inSocket, (struct sockaddr *) &inAdr, sizeof(sockaddr_in));
+    bind(inSocket, (sockaddr *) &inAdr, sizeof(sockaddr_in));
     listen(inSocket, TCP_TOKEN_RING_MAX_CONN);
     acceptThread = thread(&ClientTCP::handleInSocket, this);
 
     outSocket = socket(AF_INET, SOCK_STREAM, 0);
-    connect(outSocket, (struct sockaddr *) &outAdr, sizeof(sockaddr_in));
+    connect(outSocket, (sockaddr *) &outAdr, sizeof(sockaddr_in));
 }
 
 ClientTCP::~ClientTCP() {
@@ -131,7 +131,7 @@ void ClientTCP::move(sockaddr_in newNeighbour) {
     close(outSocket);
 
     outSocket = socket(AF_INET, SOCK_STREAM, 0);
-    connect(outSocket, (struct sockaddr *) &newNeighbour, sizeof(sockaddr_in));
+    connect(outSocket, (sockaddr *) &newNeighbour, sizeof(sockaddr_in));
 }
 
 const sockaddr_in &ClientTCP::getOwnAddress() const {

@@ -26,7 +26,7 @@ TokenRingSystem::TokenRingSystem(string &systemID, sockaddr_in inAdr, sockaddr_i
     if (type == TokenRingType::TOKEN_UDP) {
         client = new ClientUDP(inAdr, outAdr);
     } else {
-        //client = new ClientTCP(inAdr, outAdr);
+        client = new ClientTCP(inAdr, outAdr);
     }
 
     isWorking = true;

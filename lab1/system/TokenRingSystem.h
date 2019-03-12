@@ -23,7 +23,7 @@ class TokenRingSystem {
     friend class TokenMessageProcessor;
 
 private:
-    ClientUDP *client;
+    Client *client;
 
     string ownID;
     string neighbourID;

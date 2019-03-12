@@ -14,7 +14,7 @@
 #include "../ThreadSafeDeque.h"
 #include "../Client.h"
 
-class ClientUDP : Client {
+class ClientUDP : public Client {
 private:
     int inSocket;
     int outSocket;

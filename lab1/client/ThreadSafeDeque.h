@@ -5,6 +5,7 @@
 #ifndef DISTRIBUTED_SYSTEMS_THREADSAFEQUEUE_H
 #define DISTRIBUTED_SYSTEMS_THREADSAFEQUEUE_H
 
+#include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <deque>

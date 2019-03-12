@@ -13,7 +13,7 @@ void TokenMessageProcessor::processToken(TokenRingSystem *system, Token *token) 
     }
 
     if (system->isNormalToken(token)) {
-        if (!system->inQueue.empty() && !system->hasReservation) {
+        if ((!system->inQueue.empty() || !system->moveQueue.empty()) && !system->hasReservation) {
             system->hasReservation = true;
             system->reservationNum = token->getReservationNum() + 1;
             token->setReservationNum(system->reservationNum);

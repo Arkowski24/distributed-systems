@@ -13,6 +13,7 @@ void TokenRingSystem::work() {
     while (isWorking) {
         Token *token = client->receiveToken();
         client->notifyListeners(token);
+        std::cout << ownID << ": Got Token - Type: " << token->getType() << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
         TokenMessageProcessor::processToken(this, token);
     }

@@ -2,7 +2,6 @@
 // Created by Farald on 2019-03-08.
 //
 
-
 #include <iostream>
 #include "token/Token.h"
 #include "system/TokenRingSystem.h"
@@ -11,32 +10,42 @@ int main(int argc, char *argv[]) {
     sockaddr_in inAdd = {0};
     sockaddr_in outAdd = {0};
 
-    string ownID1 = "xd1";
-    string ownID2 = "xd2";
-    string ownID3 = "xd3";
+    string ownID = argv[1];
+    uint16_t inPort = (uint16_t) std::stol(argv[2]);
+    uint16_t outPort = (uint16_t) std::stol(argv[4]);
+
     inAdd.sin_family = AF_INET;
-    inAdd.sin_port = htons(2344);
-    inAdd.sin_addr.s_addr = INADDR_ANY;
+    inAdd.sin_port = htons(inPort);
+    inAdd.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     outAdd.sin_family = AF_INET;
-    outAdd.sin_port = htons(2344);
-    outAdd.sin_addr.s_addr = INADDR_ANY;
+    outAdd.sin_port = htons(outPort);
+    outAdd.sin_addr.s_addr = inet_addr(argv[3]);
 
+    TokenRingType ringType;
+    bool hasToken;
 
-    auto ringSystem1 = new TokenRingSystem(ownID1, inAdd, outAdd, TokenRingType::TOKEN_UDP, true);
+    hasToken = (strcmp("y", argv[5]) == 0|| strcmp("Y", argv[5]) == 0);
 
-    inAdd.sin_port = htons(2220);
-    outAdd.sin_port = htons(2344);
-    auto ringSystem2 = new TokenRingSystem(ownID2, inAdd, outAdd, TokenRingType::TOKEN_UDP, false);
+    if(strcmp("tcp", argv[6]) == 0 || strcmp("TCP", argv[6]) == 0)
+        ringType = TokenRingType::TOKEN_TCP;
+    else
+        ringType = TokenRingType::TOKEN_UDP;
 
-    inAdd.sin_port = htons(2219);
-    outAdd.sin_port = htons(2344);
-    auto ringSystem3 = new TokenRingSystem(ownID3, inAdd, outAdd, TokenRingType::TOKEN_UDP, false);
+    auto ring = new TokenRingSystem(ownID, inAdd, outAdd, ringType, hasToken);
 
-    std::this_thread::sleep_for(std::chrono::minutes(2));
-    ringSystem1->shutdown();
-    ringSystem2->shutdown();
-    ringSystem3->shutdown();
+    string receiver, data;
+    do {
+        std::cin >> receiver >> data;
+        vector<uint8_t> msgData (data.size());
+        memcpy(msgData.data(), data.data(), data.length());
+        auto *msg = new Message(TokenType::DATA, ownID, receiver, msgData);
+        ring->sendMessage(msg);
+
+        auto *msg2 = ring->receiveMessage();
+        string output = string((char *) msg2->data.data(), msg2->data.size());
+        std::cout << output << std::endl;
+    } while (!receiver.empty());
 
     return 0;
 }

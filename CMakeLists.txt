@@ -34,6 +34,6 @@ add_library(TOKEN_RING_LIB STATIC
         lib/token/TokenOutStream.cpp
         lib/token/TokenOutStream.h)
 
-add_executable(TEST_APP test/app.cpp)
+add_executable(TEST_APP test/testapp/app.cpp)
 target_link_libraries(TEST_APP TOKEN_RING_LIB)
 target_link_libraries(TEST_APP Threads::Threads)

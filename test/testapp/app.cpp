@@ -3,8 +3,8 @@
 //
 
 #include <iostream>
-#include "../lib/token/Token.h"
-#include "../lib/system/TokenRingSystem.h"
+#include "token/Token.h"
+#include "system/TokenRingSystem.h"
 
 int main(int argc, char *argv[]) {
     sockaddr_in inAdd = {0};
